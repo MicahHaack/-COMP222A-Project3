@@ -17,18 +17,13 @@ import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
  */
 public class Program3MicahHaackMain {
 
+	private final static int NUM_RUNS = 10;
 	
 	public static void main(String[] args) {
 		
 		
 		// construct large int array
-		int[] orgArr = new int[40000];
-		Random rand = new Random();
-		
-		for( int i = 0; i < orgArr.length; i++ ) {
-			
-			orgArr[i] = rand.nextInt(40000);
-		}
+		int[] orgArr = genRandArray(40000);
 		
 		System.out.println("--- NOW TESTING LARGE ARRAY ---");
 		
@@ -51,8 +46,169 @@ public class Program3MicahHaackMain {
 		
 		System.out.println("---------------------------");
 		
+		System.out.println("--- NOW TESTING VARIOUS SIZE ARRAYS AND TIMING ---\n");
+		
+		testArray(10);
+		testArray(100);
+		testArray(500);
+		testArray(1000);
+		testArray(5000);
+		testArray(10000);
+		testArray(20000);
+		
+		System.out.println("\n---------------------------");
+		
+		
 	}
 	
+	/**
+	 * Helper method to automatically test the timing on an array of size size
+	 * @param size The size of array to test
+	 */
+	public static void testArray(int size) {
+		
+		int[] arr = genRandArray(size);
+		System.out.println("... Testing Array Size " + size + " ...");
+		long[] times = timeSorts(arr);
+		printResults(size, times);
+		System.out.println("... Array Size " + size + " Testing Complete! ...");
+		
+	}
+	
+	
+	/**
+	 * Helper method to make printing time results easier.
+	 * @param size The size of the array tested
+	 * @param times The timing values
+	 */
+	public static void printResults(int size, long[] times) {
+		
+		System.out.printf("Array size %d results:\nMerge Time: %d ms\nHeap Time: %d ms\nInsertion Time: %d ms\nSelection Time: %d ms\nBubble Time: %d ms\n", size, times[0], times[1], times[2], times[3], times[4]);
+		
+	}
+	
+	/**
+	 * Helper method to obtain a random array of any size
+	 * @param size The size of the array desired
+	 * @return An array of size size with random ints
+	 */
+	public static int[] genRandArray(int size) {
+		
+		int[] returnArr = new int[size];
+		Random rand = new Random();
+		
+		for( int i = 0; i < returnArr.length; i++ ) {
+			
+			returnArr[i] = rand.nextInt(size);
+		}
+		
+		return returnArr;
+		
+	}
+	
+
+	/**
+	 * This method is used to find the averages for an array with each sorting method
+	 * format of return is -> avg time of [ merge, heap, insertion, selection, bubble ]
+	 * @param a The array to test on
+	 * @return The average timing of a varitey of sorting methods
+	 */
+	public static long[] timeSorts(int[] a) {
+		
+		// MERGE
+		long mergeTime = 0;
+		
+		for( int i = 0; i < NUM_RUNS; i++ ) {
+			
+			int[] copy = copyArray(a);
+			
+			long start = System.nanoTime();
+			int[] newCopy = mergeSort(copy);
+			long finish = System.nanoTime();
+			long timeInMSec = (finish - start) / 1000;
+			
+			mergeTime += timeInMSec;
+			
+		}
+		
+		mergeTime /= NUM_RUNS;
+		
+		// HEAP
+		long heapTime = 0;
+		
+		for( int i = 0; i < NUM_RUNS; i++ ) {
+			
+			int[] copy = copyArray(a);
+			
+			long start = System.nanoTime();
+			int[] newCopy = heapSort(copy);
+			long finish = System.nanoTime();
+			long timeInMSec = (finish - start) / 1000;
+			
+			heapTime += timeInMSec;
+			
+		}
+		
+		heapTime /= NUM_RUNS;
+		
+		// INSERTION
+		long insertionTime = 0;
+		
+		for( int i = 0; i < NUM_RUNS; i++ ) {
+			
+			int[] copy = copyArray(a);
+			
+			long start = System.nanoTime();
+			int[] newCopy = insertionSort(copy);
+			long finish = System.nanoTime();
+			long timeInMSec = (finish - start) / 1000;
+			
+			insertionTime += timeInMSec;
+			
+		}
+		
+		insertionTime /= NUM_RUNS;
+		
+		// SELECTION
+		long selectionTime = 0;
+		
+		for( int i = 0; i < NUM_RUNS; i++ ) {
+			
+			int[] copy = copyArray(a);
+			
+			long start = System.nanoTime();
+			int[] newCopy = selectionSort(copy);
+			long finish = System.nanoTime();
+			long timeInMSec = (finish - start) / 1000;
+			
+			selectionTime += timeInMSec;
+			
+		}
+		
+		selectionTime /= NUM_RUNS;
+		
+		// BUBBLE
+		long bubbleTime = 0;
+		
+		for( int i = 0; i < NUM_RUNS; i++ ) {
+			
+			int[] copy = copyArray(a);
+			
+			long start = System.nanoTime();
+			int[] newCopy = bubbleSort(copy);
+			long finish = System.nanoTime();
+			long timeInMSec = (finish - start) / 1000;
+			
+			bubbleTime += timeInMSec;
+			
+		}
+		
+		bubbleTime /= NUM_RUNS;
+		
+		long[] returnArr = {mergeTime, heapTime, insertionTime, selectionTime, bubbleTime};
+		return returnArr;
+		
+	}
 
 	/**
 	 * This method implements merge sort based on the textbook description
