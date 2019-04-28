@@ -10,6 +10,18 @@ import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
  * 
  * @author Micah Haack
  *
+ * ANALYSIS PARAGRAPH
+ * From the sorting results, we notice a few things. Selection,
+ * Insertion, and Bubble seem to do well for smaller size arrays,
+ * but as the size increases the time taken drastically rises as
+ * seen in the plot in my excel file.  Bubble is more efficient,
+ * but still struggles at high sizes.
+ * Heap and Merge on the other hand, while they take longer on than
+ * the others for small sizes, they drastically outperform the others
+ * on arrays of larger size, and at a size of 20000 are roughly 360 times
+ * faster than the others.
+ *
+ *
  * Program 3 COMP222
  * This project deals with implementing a few types
  * of sorting algorithms, and analyzing the runtimes
